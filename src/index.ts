@@ -49,7 +49,6 @@ export const createViteConfig = ({
     SOURCE_VERSION?: string
     SENTRY_AUTH_TOKEN?: string
     SENTRY_ORG?: string
-    SENTRY_PROJECT?: string
     [key: string]: string | undefined | number
   }
   publicEnv?: Record<string, string>
@@ -76,7 +75,6 @@ export const createViteConfig = ({
   sourceVerson = sourceVerson || env?.SOURCE_VERSION
   sentryAuthToken = sentryAuthToken || env?.SENTRY_AUTH_TOKEN
   sentryOrg = sentryOrg || env?.SENTRY_ORG
-  sentryProject = sentryProject || env?.SENTRY_PROJECT
   sentryEnabled = sentryEnabled ?? (!!sentryAuthToken && !!sourceVerson && !!sentryOrg && !!sentryProject)
   if (sentryEnabled) {
     if (!sentryAuthToken) {
