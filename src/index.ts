@@ -30,7 +30,10 @@ export const createViteConfig = ({
   env,
   port,
   sourceVerson,
+  sentryOrg,
+  sentryProject,
   sentryAuthToken,
+  sentryEnabled,
   bundleStats,
   projectName,
   publicEnv,
@@ -45,12 +48,17 @@ export const createViteConfig = ({
     PORT?: number | string
     SOURCE_VERSION?: string
     SENTRY_AUTH_TOKEN?: string
+    SENTRY_ORG?: string
+    SENTRY_PROJECT?: string
     [key: string]: string | undefined | number
   }
   publicEnv?: Record<string, string>
   port?: number | string
   sourceVerson?: string
   sentryAuthToken?: string
+  sentryOrg?: string
+  sentryProject?: string
+  sentryEnabled?: boolean
   bundleStats?: boolean
   projectName?: string
   pwa?: boolean
@@ -67,6 +75,23 @@ export const createViteConfig = ({
   port = Number(port || env?.PORT)
   sourceVerson = sourceVerson || env?.SOURCE_VERSION
   sentryAuthToken = sentryAuthToken || env?.SENTRY_AUTH_TOKEN
+  sentryOrg = sentryOrg || env?.SENTRY_ORG
+  sentryProject = sentryProject || env?.SENTRY_PROJECT
+  sentryEnabled = sentryEnabled ?? (!!sentryAuthToken && !!sourceVerson && !!sentryOrg && !!sentryProject)
+  if (sentryEnabled) {
+    if (!sentryAuthToken) {
+      throw new Error('SENTRY_AUTH_TOKEN is required')
+    }
+    if (!sourceVerson) {
+      throw new Error('SOURCE_VERSION is required')
+    }
+    if (!sentryOrg) {
+      throw new Error('SENTRY_ORG is required')
+    }
+    if (!sentryProject) {
+      throw new Error('SENTRY_PROJECT is required')
+    }
+  }
   resolveAlieses =
     resolveAlieses ||
     (resolveAliesesByTsconfig && tsconfig?.compilerOptions?.paths && __dirname
@@ -131,11 +156,11 @@ export const createViteConfig = ({
               gzipSize: true,
               brotliSize: true,
             }),
-        !sentryAuthToken || !sourceVerson
+        !sentryAuthToken || !sourceVerson || !sentryOrg || !sentryProject
           ? undefined
           : sentryVitePlugin({
-              org: 'bananygi',
-              project: 'webapp',
+              org: sentryOrg,
+              project: sentryProject,
               authToken: sentryAuthToken,
               release: { name: sourceVerson },
             }),
