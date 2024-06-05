@@ -38,7 +38,7 @@ export const createViteConfig = ({
   projectName,
   publicEnv,
   pwa,
-  __dirname,
+  cwd,
   tsconfig,
   resolveAliesesByTsconfig,
   resolveAlieses,
@@ -61,7 +61,7 @@ export const createViteConfig = ({
   bundleStats?: boolean
   projectName?: string
   pwa?: boolean
-  __dirname?: string
+  cwd?: string
   tsconfig?: {
     compilerOptions?: {
       paths?: Record<string, string[]>
@@ -92,11 +92,11 @@ export const createViteConfig = ({
   }
   resolveAlieses =
     resolveAlieses ||
-    (resolveAliesesByTsconfig && tsconfig?.compilerOptions?.paths && __dirname
+    (resolveAliesesByTsconfig && tsconfig?.compilerOptions?.paths && cwd
       ? Object.fromEntries(
           Object.entries(tsconfig.compilerOptions.paths).map(([key, [value]]) => [
             key.replace('/*', ''),
-            path.resolve(__dirname, value.replace('/*', '')),
+            path.resolve(cwd, value.replace('/*', '')),
           ])
         )
       : {})
