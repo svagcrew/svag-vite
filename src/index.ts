@@ -43,6 +43,7 @@ export const createViteConfig = ({
   resolveAliesesByTsconfig,
   resolveAlieses,
   plugins,
+  babelPlugins,
 }: {
   env?: {
     PORT?: number | string
@@ -70,6 +71,7 @@ export const createViteConfig = ({
   resolveAliesesByTsconfig?: true
   resolveAlieses?: Record<string, string>
   plugins?: Plugin[]
+  babelPlugins?: any[]
 }) => {
   port = Number(port || env?.PORT)
   sourceVerson = sourceVerson || env?.SOURCE_VERSION
@@ -142,7 +144,9 @@ export const createViteConfig = ({
                 enabled: true,
               },
             }),
-        react(),
+        react({
+          ...(babelPlugins ? { babel: { plugins: babelPlugins, babelrc: false, configFile: false } } : {}),
+        }),
         svgr(),
         legacy({
           targets: ['> 2%'],
