@@ -30,7 +30,6 @@ export const createViteConfig = ({
   env,
   port,
   sourceVerson,
-  sentryOrg,
   sentryProject,
   sentryAuthToken,
   sentryEnabled,
@@ -49,14 +48,12 @@ export const createViteConfig = ({
     PORT?: number | string
     SOURCE_VERSION?: string
     SENTRY_AUTH_TOKEN?: string
-    SENTRY_ORGANIZATION?: string
     [key: string]: string | undefined | number
   }
   publicEnv?: Record<string, string>
   port?: number | string
   sourceVerson?: string
   sentryAuthToken?: string
-  sentryOrg?: string
   sentryProject?: string
   sentryEnabled?: boolean
   bundleStats?: boolean
@@ -76,17 +73,13 @@ export const createViteConfig = ({
   port = Number(port || env?.PORT)
   sourceVerson = sourceVerson || env?.SOURCE_VERSION
   sentryAuthToken = sentryAuthToken || env?.SENTRY_AUTH_TOKEN
-  sentryOrg = sentryOrg || env?.SENTRY_ORGANIZATION
-  sentryEnabled = sentryEnabled ?? (!!sentryAuthToken && !!sourceVerson && !!sentryOrg && !!sentryProject)
+  sentryEnabled = sentryEnabled ?? (!!sentryAuthToken && !!sourceVerson && !!sentryProject)
   if (sentryEnabled) {
     if (!sentryAuthToken) {
       throw new Error('SENTRY_AUTH_TOKEN is required')
     }
     if (!sourceVerson) {
       throw new Error('SOURCE_VERSION is required')
-    }
-    if (!sentryOrg) {
-      throw new Error('SENTRY_ORGANIZATION is required')
     }
     if (!sentryProject) {
       throw new Error('SENTRY_PROJECT is required')
@@ -158,10 +151,9 @@ export const createViteConfig = ({
               gzipSize: true,
               brotliSize: true,
             }),
-        !sentryAuthToken || !sourceVerson || !sentryOrg || !sentryProject
+        !sentryAuthToken || !sourceVerson || !sentryProject
           ? undefined
           : sentryVitePlugin({
-              org: sentryOrg,
               project: sentryProject,
               authToken: sentryAuthToken,
               release: { name: sourceVerson },
