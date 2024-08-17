@@ -49,7 +49,7 @@ export const createViteConfig = ({
     PORT?: number | string
     SOURCE_VERSION?: string
     SENTRY_AUTH_TOKEN?: string
-    SENTRY_ORG?: string
+    SENTRY_ORGANIZATION?: string
     [key: string]: string | undefined | number
   }
   publicEnv?: Record<string, string>
@@ -76,7 +76,7 @@ export const createViteConfig = ({
   port = Number(port || env?.PORT)
   sourceVerson = sourceVerson || env?.SOURCE_VERSION
   sentryAuthToken = sentryAuthToken || env?.SENTRY_AUTH_TOKEN
-  sentryOrg = sentryOrg || env?.SENTRY_ORG
+  sentryOrg = sentryOrg || env?.SENTRY_ORGANIZATION
   sentryEnabled = sentryEnabled ?? (!!sentryAuthToken && !!sourceVerson && !!sentryOrg && !!sentryProject)
   if (sentryEnabled) {
     if (!sentryAuthToken) {
@@ -86,7 +86,7 @@ export const createViteConfig = ({
       throw new Error('SOURCE_VERSION is required')
     }
     if (!sentryOrg) {
-      throw new Error('SENTRY_ORG is required')
+      throw new Error('SENTRY_ORGANIZATION is required')
     }
     if (!sentryProject) {
       throw new Error('SENTRY_PROJECT is required')
